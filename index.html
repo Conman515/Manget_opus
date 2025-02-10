@@ -1338,105 +1338,126 @@ function animateOscillationGraph(frequencyKHz) {
     drawOscillation();
 }
 
+// Global flag for interference (activated when the user presses 0)
+let isInterfering = false;
 
+// Key event listeners to toggle the interference flag
+window.addEventListener('keydown', function(e) {
+  if (e.code === 'Digit0' || e.code === 'Numpad0') {
+    isInterfering = true;
+  }
+});
+window.addEventListener('keyup', function(e) {
+  if (e.code === 'Digit0' || e.code === 'Numpad0') {
+    isInterfering = false;
+  }
+});
 
-// Initialize everything on page load
-window.onload = function () {
-    updateFrequency();
-};
-
-let isInterfering = false; // Tracks if the space bar is being pressed (for interference)
-
-// Function to draw ASK modulation
+//
+// ASK Modulation with Immediate Amplitude Switch
+//
 function drawASKModulation() {
-    const canvas = document.getElementById('askModulationCanvas');
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
-
-    let time = 0;
-    const frequency = 10;
-    const amplitude = height / 4;
-
-    function draw() {
-        ctx.clearRect(0, 0, width, height);
-
-        ctx.beginPath();
-        ctx.moveTo(0, height / 2);
-
-        // Draw the ASK waveform
-        for (let x = 0; x < width; x++) {
-            let carrierAmplitude = isInterfering ? amplitude / 5 : amplitude; // Reduce amplitude during interference
-            let y = height / 2 + carrierAmplitude * Math.sin(2 * Math.PI * frequency * (x / width) + time);
-            ctx.lineTo(x, y);
-        }
-
-        ctx.strokeStyle = '#ff9500';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        time += 0.1;
-        requestAnimationFrame(draw);
-    }
-
-    draw();
+  const canvas = document.getElementById('askModulationCanvas');
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  let time = 0;
+  
+  // Settings for ASK: baseline frequency remains 2 Hz.
+  const frequency = 2;
+  const fullAmplitude = height / 4;
+  const interferenceAmplitude = fullAmplitude / 5; 
+  // No smoothing: we set the amplitude immediately based on key state.
+  let currentAmplitude = fullAmplitude; 
+  
+  const centerY = height / 2;
+  // Calculate the initial point.
+  let lastY = centerY + currentAmplitude * Math.sin(2 * Math.PI * frequency * time);
+  
+  ctx.clearRect(0, 0, width, height);
+  
+  function draw() {
+    // Scroll the canvas left by 1 pixel.
+    const imageData = ctx.getImageData(1, 0, width - 1, height);
+    ctx.putImageData(imageData, 0, 0);
+    // Clear the rightmost column.
+    ctx.clearRect(width - 1, 0, 1, height);
+    
+    // Immediately set the amplitude based on whether 0 is held.
+    currentAmplitude = isInterfering ? interferenceAmplitude : fullAmplitude;
+    
+    // Advance time and compute the new y position.
+    time += 0.02;
+    let newY = centerY + currentAmplitude * Math.sin(2 * Math.PI * frequency * time);
+    
+    // Draw a continuous line segment from the previous point to the new point.
+    ctx.beginPath();
+    ctx.moveTo(width - 2, lastY);
+    ctx.lineTo(width - 1, newY);
+    ctx.strokeStyle = '#ff9500';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    lastY = newY;
+    requestAnimationFrame(draw);
+  }
+  draw();
 }
 
-// Function to draw FSK modulation
+//
+// FSK Modulation with Immediate Frequency Switch
+//
 function drawFSKModulation() {
-    const canvas = document.getElementById('fskModulationCanvas');
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
-
-    let time = 0;
-    const lowFrequency = 8;
-    const highFrequency = 12;
-    const amplitude = height / 4;
-
-    function draw() {
-        ctx.clearRect(0, 0, width, height);
-
-        ctx.beginPath();
-        ctx.moveTo(0, height / 2);
-
-        // Draw the FSK waveform
-        for (let x = 0; x < width; x++) {
-            let freq = isInterfering ? highFrequency : lowFrequency; // Switch frequency during interference
-            let y = height / 2 + amplitude * Math.sin(2 * Math.PI * freq * (x / width) + time);
-            ctx.lineTo(x, y);
-        }
-
-        ctx.strokeStyle = '#ff9500';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        time += 0.1;
-        requestAnimationFrame(draw);
-    }
-
-    draw();
+  const canvas = document.getElementById('fskModulationCanvas');
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  let time = 0;
+  
+  // Settings for FSK: baseline is 2 Hz and interference is 8 Hz.
+  const normalFrequency = 2;
+  const interferenceFrequency = 8;
+  let currentFrequency = normalFrequency;
+  
+  const amplitude = height / 4;
+  const centerY = height / 2;
+  let lastY = centerY + amplitude * Math.sin(2 * Math.PI * currentFrequency * time);
+  
+  ctx.clearRect(0, 0, width, height);
+  
+  function draw() {
+    // Scroll the canvas content left by 1 pixel.
+    const imageData = ctx.getImageData(1, 0, width - 1, height);
+    ctx.putImageData(imageData, 0, 0);
+    // Clear the rightmost column.
+    ctx.clearRect(width - 1, 0, 1, height);
+    
+    // Immediately set currentFrequency based on key state.
+    currentFrequency = isInterfering ? interferenceFrequency : normalFrequency;
+    
+    // Advance time and compute the new y coordinate.
+    time += 0.02;
+    let newY = centerY + amplitude * Math.sin(2 * Math.PI * currentFrequency * time);
+    
+    // Draw the continuous line segment.
+    ctx.beginPath();
+    ctx.moveTo(width - 2, lastY);
+    ctx.lineTo(width - 1, newY);
+    ctx.strokeStyle = '#ff9500';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    lastY = newY;
+    requestAnimationFrame(draw);
+  }
+  draw();
 }
 
-// Handle spacebar keypress for interference
-window.addEventListener('keydown', function (e) {
-    if (e.code === 'Digit0' || e.code === 'Numpad0') {
-        isInterfering = true; // Activate interference
-    }
-});
-
-window.addEventListener('keyup', function (e) {
-    if (e.code === 'Digit0' || e.code === 'Numpad0') {
-        isInterfering = false; // Deactivate interference
-    }
-});
-
-// Initialize both modulation visuals
-window.onload = function () {
-    drawASKModulation();
-    drawFSKModulation();
+// Initialize both modulation functions when the page loads
+window.onload = function() {
+  drawASKModulation();
+  drawFSKModulation();
 };
-
 
     // Scroll to Top Functionality
     window.onscroll = function() { scrollFunction(); };
