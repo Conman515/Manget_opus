@@ -652,12 +652,12 @@ h4 {
         </div>
         </div>
         <div class="card content-section">
-        <p>In PIT systems, the reader emits electromagnetic waves that interact with the tag. The behavior of these waves is governed by <stong> Maxwell's equations</stong>, which describe how electric and magnetic fields are generated and altered by each other and by charges and currents. <strong>Faraday's Law </strong> tells us that when a magnetic field changes over time, it generates an electric field. <strong> Ampère's Law</strong> says that a changing electric field produces a magnetic field.
+        <p>In PIT systems, the reader emits electromagnetic waves that interact with the tag. The behavior of these waves is governed by <strong>Maxwell's equations</strong>, which describe how electric and magnetic fields are generated and altered by each other and by charges and currents. <strong>Faraday's Law </strong> tells us that when a magnetic field changes over time, it generates an electric field. <strong> Ampère's Law</strong> says that a changing electric field produces a magnetic field.
 
             When these two principles work together, they create <strong>self-propagating</strong> electromagnetic waves. As the electric field changes, it creates a magnetic field, and as the magnetic field changes, it creates an electric field. This process keeps repeating, allowing the wave to travel through space without needing any material to move through (like air or water). This is how electromagnetic radiation (like light, radio waves, and microwaves) can travel through the vacuum of space. </p>
             <div class="image-container">
                 <img src="images/EMW.jpg" alt="FDX" width="500">
-                <img src="images/Faradays.gif" width="500">
+                <img src="images/Faradays.gif" alt="Faraday demonstration" width="500">
             </div>
         </div>
 <h3>Electromagnetic Wave Analogy: The Stadium Wave</h3>
@@ -693,7 +693,7 @@ h4 {
         <br>
         <p>The resonant frequency of an LC circuit is given by the formula:</p>
         <div class="image-container">
-        <img src="images/LC_Formula.png" width="500">
+        <img src="images/LC_Formula.png" alt="LC circuit formula" width="500">
         </div>
         <p>Where:</p>
            <li> <strong>𝑓0</strong> is the resonant frequency in Hertz (Hz).</li>
@@ -715,7 +715,7 @@ h4 {
         </ul>
         <p>This back-and-forth energy exchange causes the circuit to resonate at its natural frequency. In PIT tag systems, this oscillation at 134.2 kHz is essential for efficient energy harvesting from the reader’s magnetic field.</p>
         <div class="image-container">
-        <img src="images/LC_gif.gif" width="500">
+        <img src="images/LC_gif.gif" alt="LC circuit animation" width="500">
         </div>
         <br>
         <br> 
@@ -811,7 +811,7 @@ h4 {
         <p>The reader’s internal circuitry decodes the modulated signal into binary data. This data is then processed, revealing the unique ID or other information stored on the PIT tag.</p>
         </div>
         <hr>
-        <h3>Example: The antenna can be thought of as a flashlight. The reader can be though of as a device that measures the amount of light and is locatated behind the flashlight. The tag can be thought of as a mirror. When the light from the flashlight strikes the mirror it is reflected back to the measuring device resulting in an increased value of light. If you imagine the mirror spinning at a variable rate, the reader would experience period of light and dark which is akin to bianary code. (0 Dark) (1 Light)</h3>
+        <h3>Example: The antenna can be thought of as a flashlight. The reader can be thought of as a device that measures the amount of light and is located behind the flashlight. The tag can be thought of as a mirror. When the light from the flashlight strikes the mirror it is reflected back to the measuring device, resulting in an increased value of light. If you imagine the mirror spinning at a variable rate, the reader would experience periods of light and dark, which is akin to binary code (0 for dark, 1 for light).</h3>
     </div>
     
     
@@ -824,7 +824,7 @@ h4 {
         <div class="card content-section">
         <p>Modulation is the process of varying a carrier signal to transmit information. In RFID systems, modulation techniques are essential for encoding data onto the electromagnetic waves emitted by the tags and readers. Two primary communication protocols used in PIT tag systems are <strong>Full Duplex (FDX)</strong> and <strong> Half Duplex (HDX)</strong>.</p>
         <br>
-        <p><strong>Full Duplex (FDX)</strong> communication allows simultaneous transmission and reception of signals. In FDX systems, the tag does not generate its own signal. Instead, it modulates the reader's magnetic field by varying its impedance, causing perturbations, typically using <strong>amplitutde-shift keying (ASK)</strong> modulation in the reader's field that the reader detects and decodes. The tag relies entirely on the energy in the reader's field for communication and doesn't transmit its own electromagnetic wave. This is a passive process.
+        <p><strong>Full Duplex (FDX)</strong> communication allows simultaneous transmission and reception of signals. In FDX systems, the tag does not generate its own signal. Instead, it modulates the reader's magnetic field by varying its impedance, causing perturbations, typically using <strong>amplitude-shift keying (ASK)</strong> modulation in the reader's field that the reader detects and decodes. The tag relies entirely on the energy in the reader's field for communication and doesn't transmit its own electromagnetic wave. This is a passive process.
         </p>
         <br>
         <p><strong>Half Duplex (HDX)</strong> communication involves alternating periods of transmission and reception. In HDX systems, the tag actively transmits its signal during the reader's listening phase. After accumulating enough power from the reader’s magnetic field (via inductive coupling), the tag generates its own signal, typically using <strong>frequency-shift keying (FSK)</strong> modulation. The reader then listens for this signal after it temporarily stops transmitting its own field. This is an active process.</p>
@@ -842,7 +842,7 @@ h4 {
         <ul>ASK works well in FDX systems, where the tag is passively modulating the reader’s magnetic field without transmitting its own signal.</ul>
         <br>
         <div class="image-container">
-        <img src="images/Modulation.png" width="500">
+        <img src="images/Modulation.png" alt="ASK vs FSK modulation" width="500">
         </div>
         <br>
         <!-- ASK Modulation Canvas -->
@@ -1198,80 +1198,6 @@ h4 {
         }
     }
 
-    // Function to update frequency based on sliders and animate LC oscillation
-function updateFrequency() {
-    var inductanceSlider = document.getElementById('inductanceSlider');
-    var capacitanceSlider = document.getElementById('capacitanceSlider');
-    var inductanceValue = parseFloat(inductanceSlider.value);
-    var capacitanceValue = parseFloat(capacitanceSlider.value);
-
-    var frequency = 1 / (2 * Math.PI * Math.sqrt(inductanceValue * capacitanceValue));
-    var frequencyKHz = (frequency / 1000).toFixed(2);
-
-    document.getElementById('frequencyValue').textContent = frequencyKHz + ' kHz';
-
-    // Update slider values display
-    document.getElementById('inductanceValue').textContent = (inductanceValue * 1e6).toFixed(0) + ' µH';
-    document.getElementById('capacitanceValue').textContent = (capacitanceValue * 1e9).toFixed(0) + ' nF';
-
-    // Call the animation function with the updated frequency
-    animateLCOscillation(frequencyKHz);
-}
-
-function animateLCOscillation(frequencyKHz) {
-    const canvas = document.getElementById('lcOscillationCanvas');
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
-
-    // Clear the canvas
-    ctx.clearRect(0, 0, width, height);
-
-    // Variables for animation
-    const amplitude = 100;
-    const centerX = width / 2;
-    const centerY = height / 2;
-    const period = 1 / frequencyKHz; // Use frequency to set oscillation speed
-    let time = 0;
-
-    // Draw the oscillation between inductance and capacitance
-    function drawOscillation() {
-        // Clear previous frame
-        ctx.clearRect(0, 0, width, height);
-
-        // Set styles
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#ff9500';
-        ctx.fillStyle = 'rgba(255, 149, 0, 0.3)';
-
-        // Draw Inductance "magnetic field" (left circle)
-        ctx.beginPath();
-        const leftCircleX = centerX - amplitude * Math.cos(time * period);
-        ctx.arc(leftCircleX, centerY, 30, 0, 2 * Math.PI);
-        ctx.fill();
-
-        // Draw Capacitance "electric field" (right circle)
-        ctx.beginPath();
-        const rightCircleX = centerX + amplitude * Math.cos(time * period);
-        ctx.arc(rightCircleX, centerY, 30, 0, 2 * Math.PI);
-        ctx.fill();
-
-        // Draw connection line between inductance and capacitance
-        ctx.beginPath();
-        ctx.moveTo(leftCircleX, centerY);
-        ctx.lineTo(rightCircleX, centerY);
-        ctx.stroke();
-
-        // Increase time for next frame
-        time += 0.05;
-
-        // Loop the animation
-        requestAnimationFrame(drawOscillation);
-    }
-
-    // Start the animation
-    drawOscillation();
-}
 
 // Initialize frequency on page load
 window.onload = function () {
